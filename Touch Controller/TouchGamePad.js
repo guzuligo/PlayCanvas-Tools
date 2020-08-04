@@ -1,5 +1,5 @@
 //By guzuligo at gmail dot com
-//Version 1.0.0
+//Version 1.0.1
 
 var TouchGamePad = pc.createScript('touchGamePad');
 //For User
@@ -34,6 +34,7 @@ TouchGamePad.prototype.opacity=[0,0];//pad,stick
 TouchGamePad.prototype.id=-1;
 TouchGamePad.prototype.limit_=1;
 
+TouchGamePad.prototype._tmpv3=new pc.Vec3();
 
 //Exposed vars
 
@@ -168,7 +169,7 @@ TouchGamePad.prototype.update = function(dt) {
     //if (this.id!==-1) console.log(this.get());
     
     if (this.sleepingAutoback>0 && this.autoback!==0 && this.id==-1 ){
-        var _vec_=new pc.Vec3().sub2(this._initposition,this.entity.getPosition()).scale(this.autoback);
+        var _vec_=this._tmpv3.sub2(this._initposition,this.entity.getPosition()).scale(this.autoback);
         this.entity.translate(_vec_);
         if (this.sleeping)
          if (--this.sleepingAutoback<=0)
@@ -232,7 +233,7 @@ TouchGamePad.prototype.use=function(e){
             var _r= this.mapPos_(e,true);
             var _p= this.getRes();
             var _P=1/(_p.x+_p.y);
-            _r=new pc.Vec3(_r[0],_r[1],0);
+            _r=this._tmpv3.set(_r[0],_r[1],0);
             var _t=this.entity.getPosition();
             
             //Convert to screen ratio before finding distance
@@ -346,7 +347,7 @@ TouchGamePad.prototype.limitv0=function(t){
         P=Math.sqrt(P);
         p.x=d*p.x/P;
         p.y=d*p.y/P;
-        //pc.app.renderer.device.maxPixelRatio
+        //this.app.renderer.device.maxPixelRatio
         if (this.adjust=="follow"){
             this.entity.translate(p);
         }else
@@ -357,7 +358,7 @@ TouchGamePad.prototype.limitv0=function(t){
 
 TouchGamePad.prototype._limit=function(t,usedeadzone=false){
     var p=t.getLocalPosition().clone();
-    var d_=this.entity.getScale().clone();//pc.app.root.findByName("Pad").element.width
+    var d_=this.entity.getScale().clone();//this.app.root.findByName("Pad").element.width
     d_.scale(this.entity.element.width*0.5);
     var P=p.length();
     var d=d_.length();//*0.1;
@@ -377,7 +378,7 @@ TouchGamePad.prototype._limit=function(t,usedeadzone=false){
 
 TouchGamePad.prototype.limitv2=function(t){
     var p=t.getLocalPosition().clone();
-    var d_=this.entity.getScale().clone();//pc.app.root.findByName("Pad").element.width
+    var d_=this.entity.getScale().clone();//this.app.root.findByName("Pad").element.width
     d_.scale(this.entity.element.width*0.5);
     var P=p.length();
     p.x*=this.entity.element.width/Math.abs(this.entity.element.width+this.entity.element.height);
@@ -408,7 +409,7 @@ TouchGamePad.prototype.mapPos_=function(p,withMinus=false){
 };
 
 TouchGamePad.prototype.getRes=function(){
-    return this.holder.resolution.clone().scale(1/pc.app.renderer.device.maxPixelRatio);
+    return this.holder.resolution.clone().scale(1/this.app.renderer.device.maxPixelRatio);
 };
 
 
