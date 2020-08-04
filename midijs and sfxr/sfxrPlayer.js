@@ -1,5 +1,8 @@
-//requires https://github.com/humphd/sfxr.js/blob/master/sfxr.js
+//For questions, refer to guzuligo at gmail dot com
+//Version 1.0.0
 //You can download the "sfxr Generator.html" to make sounds
+
+//This script requires https://github.com/humphd/sfxr.js/blob/master/sfxr.js
 var SfxrPlayer = pc.createScript('sfxrPlayer');
 SfxrPlayer.staticVars={
     //https://www.jsdelivr.com/rawgit with https://rawgit.com/humphd/sfxr.js/gh-pages/sfxr.js
