@@ -1,5 +1,5 @@
 //For questions, refer to guzuligo at gmail dot com
-//Version 1.0.0
+//Version 1.0.1
 //You can download the "sfxr Generator.html" to make sounds
 
 //This script requires https://github.com/humphd/sfxr.js/blob/master/sfxr.js
@@ -7,7 +7,7 @@ var SfxrPlayer = pc.createScript('sfxrPlayer');
 SfxrPlayer.staticVars={
     //https://www.jsdelivr.com/rawgit with https://rawgit.com/humphd/sfxr.js/gh-pages/sfxr.js
     resourceFile:"https://cdn.jsdelivr.net/gh/humphd/sfxr.js@master/sfxr.js",
-    //resourceFile:pc.app.assets.find("sfxr.js").getFileUrl(),//use this if you prefer
+    //resourceFile:this.app.assets.find("sfxr.js").getFileUrl(),//use this if you prefer
     engine:null,synth:null
 };
 SfxrPlayer.prototype.audio=[];//src strings for audioPlay to read
@@ -96,7 +96,7 @@ SfxrPlayer.prototype.init = function(_callback){
                 //console.log("Engine Finished Loading") ;
                 SfxrPlayer.staticVars.synth=new sfxr.Synth();
             });
-            pc.app.assets.load(SfxrPlayer.staticVars.engine);
+            this.app.assets.load(SfxrPlayer.staticVars.engine);
         }else
             SfxrPlayer.staticVars.synth=new sfxr.Synth();
     }
