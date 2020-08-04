@@ -164,10 +164,3 @@ TouchGamePadParent.attributes.add("gamePads",{
     array:true
     
 });
-
-// swap method called for script hot-reloading
-// inherit your script state here
-// TouchGamePadParent.prototype.swap = function(old) { };
-
-// to learn more about script anatomy, please read:
-// http://developer.playcanvas.com/en/user-manual/scripting/
