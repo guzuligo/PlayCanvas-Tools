@@ -1,5 +1,5 @@
 //By guzuligo at gmail dot com
-//Version 1.0.0
+//Version 1.0.1
 var TouchGamePadParent=pc.createScript('touchGamePadParent');
 TouchGamePadParent.prototype.initialize =function(){
     this._init();
@@ -19,7 +19,7 @@ TouchGamePadParent.prototype._init= function() {
     //this.entity
 };
 TouchGamePadParent.prototype._initTouches=function(){
-    //console.log("FIRE",pc.app.touch);
+    //console.log("FIRE",this.app.touch);
     if (!this.app.touch)return false;
     var p=this.entity.script.touchGamePadParent.gamePads;
     //START
@@ -111,17 +111,17 @@ TouchGamePadParent.prototype._initMouse=function(){
     };
     
     this._destMouse=()=>{
-        pc.app.mouse.off(pc.EVENT_MOUSEDOWN,start_,this);
-        pc.app.mouse.off(pc.EVENT_MOUSEMOVE,move_,this);
-        pc.app.mouse.off(pc.EVENT_MOUSEUP,end_,this);
+        this.app.mouse.off(pc.EVENT_MOUSEDOWN,start_,this);
+        this.app.mouse.off(pc.EVENT_MOUSEMOVE,move_,this);
+        this.app.mouse.off(pc.EVENT_MOUSEUP,end_,this);
     };
     //this._destMouse();
     //console.log("DD",this._enMouse);
     if (!this._enMouse)return;
-    if (this._enMouse==1 && pc.app.touch && this._enTouch)return;
-    pc.app.mouse.on (pc.EVENT_MOUSEDOWN,start_,this);
-    pc.app.mouse.on (pc.EVENT_MOUSEMOVE,move_,this);
-    pc.app.mouse.on (pc.EVENT_MOUSEUP,end_,this);
+    if (this._enMouse==1 && this.app.touch && this._enTouch)return;
+    this.app.mouse.on (pc.EVENT_MOUSEDOWN,start_,this);
+    this.app.mouse.on (pc.EVENT_MOUSEMOVE,move_,this);
+    this.app.mouse.on (pc.EVENT_MOUSEUP,end_,this);
     this.once("destroy",this._destMouse);
 };
 // update code called every frame
