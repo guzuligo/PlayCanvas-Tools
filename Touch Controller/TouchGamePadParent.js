@@ -1,5 +1,5 @@
 //By guzuligo at gmail dot com
-//Version 1.0.1
+//Version 1.0.2 fixed mouse to only use left click
 var TouchGamePadParent=pc.createScript('touchGamePadParent');
 TouchGamePadParent.prototype.initialize =function(){
     this._init();
@@ -89,22 +89,22 @@ TouchGamePadParent.prototype._initMouse=function(){
     //if (!this.app.mouse)return false;
     var p=this.entity.script.touchGamePadParent.gamePads;
     if (this._destMouse) this._destMouse();//cleanup first
-    var start_=(e)=>{
+    var start_=(e)=>{if(e.button!==0)return;
         //console.log(e,this.app.mouse.isPressed(pc.MOUSEBUTTON_LEFT));
-        var i;e.id=-2;
+        var i;e.id=-2;console.log(e);
         i=-1;while(++i<p.length)if(p[i].enabled)
             if (p[i].script.touchGamePad.use(e))break;
        
     };
     
-    var move_=(e)=>{
+    var move_=(e)=>{if(e.button!==0)return;
         if (!this.enabled)return;
         var i;e.id=-2;
         i=-1;while(++i<p.length)if (p[i].script.touchGamePad.move(e))break;
         
     };
     
-    var end_=(e)=>{
+    var end_=(e)=>{if(e.button!==0)return;
         if (!this.enabled)return;
         var i;e.id=-2;
         i=-1;while(++i<p.length)if (p[i].script.touchGamePad.end(e))break;
