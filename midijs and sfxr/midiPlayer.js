@@ -1,9 +1,9 @@
 //For questions, refer to guzuligo at gmail dot com
-//Version 1.0.0
+//Version 1.0.1
 var MidiPlayer = pc.createScript('midiPlayer');
 MidiPlayer.staticVars={
     resourceFile:"https://www.midijs.net/lib/midi.js",
-    //resourceFile:pc.app.assets.find("midi.js").getFileUrl(),//use this if you prefer
+    //resourceFile:this.app.assets.find("midi.js").getFileUrl(),//use this if you prefer
     engine:null,synth:null
 };
 MidiPlayer.attributes.add("loop",{type:"boolean",title:"Looping",default:true});
@@ -58,7 +58,7 @@ MidiPlayer.prototype.play=function(id){
             this.play(id);
             MIDIjs.get_duration(this.midiAssets[id].getFileUrl(),(e)=>{this.duration=e;});
         });
-        pc.app.assets.load(this.midiAssets[id]);
+        this.app.assets.load(this.midiAssets[id]);
         return false;
     }
     
@@ -81,7 +81,7 @@ MidiPlayer.prototype.init=function(_callback){
     }else firstCall=false;
     MidiPlayer.staticVars.engine.once("load",()=>{_callback();});
     if(firstCall)
-        pc.app.assets.load(MidiPlayer.staticVars.engine);
+        this.app.assets.load(MidiPlayer.staticVars.engine);
     
     return false;
 };
@@ -99,4 +99,4 @@ MidiPlayer.prototype.timeUpdate=function(e){
 
 
 // MIDIjs.player_callback=console.log
-// MIDIjs.get_duration(pc.app.assets.get(33426164).getFileUrl(),console.log);
+// MIDIjs.get_duration(this.app.assets.get(33426164).getFileUrl(),console.log);
