@@ -1,3 +1,5 @@
+//For questions, refer to guzuligo at gmail dot com
+//Version 1.0.0
 var MidiPlayer = pc.createScript('midiPlayer');
 MidiPlayer.staticVars={
     resourceFile:"https://www.midijs.net/lib/midi.js",
@@ -9,26 +11,34 @@ MidiPlayer.attributes.add("midiAssets",{type:"asset",array:true,title:"Midi Asse
 
 // initialize code called once per entity
 MidiPlayer.prototype.initialize = function() {
-    
+    this.once('destroy',()=>{
+        if(this.isPlaying)this.stop();
+    });
+    this.on('state',(enable)=>{
+        return enable?this.resume():this.pause();
+    });
 };
 
 MidiPlayer.prototype.id=-1;
 MidiPlayer.prototype.time=-1;
 MidiPlayer.prototype.duration=99999;
 MidiPlayer.prototype.isPlaying=false;
+MidiPlayer.prototype.isPaused=false;
 // update code called every frame
 MidiPlayer.prototype.update = function(dt) {
     
 };
 MidiPlayer.prototype.stop=function(){
-    MIDIjs.stop();this.isPlaying=false;
+    MIDIjs.stop();this.isPlaying=this.isPaused=false;
 };
 
 MidiPlayer.prototype.pause=function(){
-    MIDIjs.pause();this.isPlaying=false;
+    if(this.isPlaying)this.isPaused=true;
+    this.isPlaying=false;
+    MIDIjs.pause();
 };
 MidiPlayer.prototype.resume=function(){
-    if (this.time<0 || !this.midiAssets[this.id].loaded)return;
+    if (this.isPaused)this.isPaused=false;else return;
     MIDIjs.resume();this.isPlaying=true;
 };
 
@@ -53,7 +63,7 @@ MidiPlayer.prototype.play=function(id){
     }
     
     MIDIjs.play(this.midiAssets[id].getFileUrl());
-    this.isPlaying=true;
+    this.isPlaying=true;this.isPaused=false;
     return true;
 };
 
