@@ -1,10 +1,12 @@
+//For questions, refer to guzuligo at gmail dot com
+//Version 1.0.1
 var ResolutionTools = pc.createScript('resolutionTools');
 
-ResolutionTools.attributes.add("ratio",{title:"Pixel Ratio",type:"number",default:0});
+ResolutionTools.attributes.add("ratio",{title:"Pixel Ratio",type:"number",default:0,min:0.01,max:2});
 ResolutionTools.attributes.add("smoothness",{title:"Smoothness",type:"number",default:0,enum:[
     {"NONE":-1},{"AUTO":0},{"PIXELATED":1},{"CRISP-EDGES":2}
 ]});
-ResolutionTools.attributes.add("fps",{title:"FPS",type:"number",default:60});
+ResolutionTools.attributes.add("fps",{title:"FPS",type:"number",default:60,min:0.5,max:60,step:1,precision:1});
 /*
 ResolutionTools.attributes.add("orientation",{title:"Set Orientation",type:"number",default:-1,enum:[
     {"none":-1},{"any":0}, {"natural":1}, {"landscape":2}, {"portrait":3} , {"portrait-primary":4} ,
@@ -25,23 +27,23 @@ ResolutionTools.prototype.initialize = function() {
 };
 
 ResolutionTools.prototype.setResolutionRatio=function (ratio_=1){
-    pc.app.renderer.device._maxPixelRatio=ratio_;
+    this.app.renderer.device._maxPixelRatio=ratio_;
     window.dispatchEvent(new Event("resize"));  
     
 };
 
 ResolutionTools.prototype.setSmoothness=function(rendering_=-1){
     if (rendering_>-1)
-        pc.app.renderer.device.canvas.style.imageRendering=
+        this.app.renderer.device.canvas.style.imageRendering=
             ["auto","pixelated","crisp-edges"][rendering_];
 };
 
 ResolutionTools.prototype.toggleFullScreen=function(){
-    pc.app.graphicsDevice.fullscreen=!pc.app.graphicsDevice.fullscreen;
+    this.app.graphicsDevice.fullscreen=!this.app.graphicsDevice.fullscreen;
 };
 
 ResolutionTools.prototype.setFullScreen=function(fullScreen_=true){
-    pc.app.graphicsDevice.fullscreen=fullScreen_;
+    this.app.graphicsDevice.fullscreen=fullScreen_;
 };
 /*
  * Change orientation to one of the following:  "any" "natural" "landscape" "portrait" 
