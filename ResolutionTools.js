@@ -4,15 +4,23 @@ ResolutionTools.attributes.add("ratio",{title:"Pixel Ratio",type:"number",defaul
 ResolutionTools.attributes.add("smoothness",{title:"Smoothness",type:"number",default:0,enum:[
     {"NONE":-1},{"AUTO":0},{"PIXELATED":1},{"CRISP-EDGES":2}
 ]});
+ResolutionTools.attributes.add("fps",{title:"FPS",type:"number",default:60});
 /*
 ResolutionTools.attributes.add("orientation",{title:"Set Orientation",type:"number",default:-1,enum:[
     {"none":-1},{"any":0}, {"natural":1}, {"landscape":2}, {"portrait":3} , {"portrait-primary":4} ,
     {"portrait-secondary":5} ,{"landscape-primary":6} ,{"landscape-secondary":7}
 ]});*/
+
+//ResolutionTools.prototype.defaultFPS=window.requestAnimationFrame;
 // initialize code called once per entity
 ResolutionTools.prototype.initialize = function() {
     if (this.ratio)this.setResolutionRatio(this.ratio);
     this.setSmoothness(this.smoothness);
+    if (this.fps!=60)this.setFPS(this.fps);
+    
+    this.on("attr:ratio",()=>this.setResolutionRatio(this.ratio));
+    this.on("attr:smoothness",()=>this.setSmoothness(this.smoothness));
+    this.on("attr:fps",()=>ResolutionTools.prototype.setFPS(this.fps));
     //this.setOrientation(this.orientation);
 };
 
@@ -48,6 +56,20 @@ ResolutionTools.prototype.setOrientation=function(type_="any"){
             type_=["any" ,"natural" ,"landscape" ,"portrait","portrait-primary", "portrait-secondary",
                    "landscape-primary", "landscape-secondary"] [type_];
     try{screen.orientation.lock(type_);}catch(e){console.error("Orientation not available.");}
+};
+
+ResolutionTools.prototype.setFPS=function(fps){
+    if(fps!=60)fps=1000/fps;else fps=16;
+    var lastTime=0;
+    window.requestAnimationFrame = function(callback, element) {
+            var currTime = new Date().getTime();
+            var timeToCall = Math.max(0, fps - (currTime - lastTime));
+            var id = window.setTimeout(function() { callback(currTime + timeToCall); }, 
+              timeToCall);
+            lastTime = currTime + timeToCall;
+            return id;
+        };  
+    
 };
 // swap method called for script hot-reloading
 // inherit your script state here
