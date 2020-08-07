@@ -1,5 +1,5 @@
 //For questions, refer to https://github.com/guzuligo
-//Version 1.0.2
+//Version 1.0.3
 var ResolutionTools = pc.createScript('resolutionTools');
 
 ResolutionTools.attributes.add("ratio",{title:"Pixel Ratio",type:"number",default:1,min:0.01,max:2});
@@ -25,7 +25,7 @@ ResolutionTools.prototype.initialize = function() {
     
     this.on("attr:ratio",()=>this.setResolutionRatio(this.ratio));
     this.on("attr:smoothness",()=>this.setSmoothness(this.smoothness));
-    this.on("attr:fps",()=>ResolutionTools.prototype.setFPS(this.fps));
+    this.on("attr:fps",()=>this.setFPS(this.fps));
     //this.setOrientation(this.orientation);
 };
 
@@ -33,6 +33,16 @@ ResolutionTools.prototype.setResolutionRatio=function (ratio_=1){
     this.app.renderer.device._maxPixelRatio=ratio_;
     window.dispatchEvent(new Event("resize"));  
     
+};
+
+ResolutionTools.prototype.lastTime=0;
+ResolutionTools.prototype.update=function(dt){
+    if(this.fps<60){
+        if(this.lastTime>1/this.fps){
+            this.lastTime=0;
+            this.app.render();
+        }else this.lastTime+=dt;
+    }
 };
 
 /*
@@ -71,7 +81,11 @@ ResolutionTools.prototype.setOrientation=function(type_){
 };
 
 ResolutionTools.prototype.setFPS=function(fps){
-    if(fps!=60)fps=1000/fps;else fps=16;
+    this.app.autoRender=(fps==60);
+    
+        
+    
+    /*
     var lastTime=0;
     window.requestAnimationFrame = function(callback, element) {
             var currTime = new Date().getTime();
@@ -81,5 +95,11 @@ ResolutionTools.prototype.setFPS=function(fps){
             lastTime = currTime + timeToCall;
             return id;
         };  
-    
+    */
 };
+// swap method called for script hot-reloading
+// inherit your script state here
+// ResolutionTools.prototype.swap = function(old) { };
+
+// to learn more about script anatomy, please read:
+// http://developer.playcanvas.com/en/user-manual/scripting/
