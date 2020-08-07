@@ -86,6 +86,7 @@ ResolutionTools.prototype.setFPS=function(fps){
         
     
     /*
+    if(fps!=60)fps=1000/fps;else fps=16;
     var lastTime=0;
     window.requestAnimationFrame = function(callback, element) {
             var currTime = new Date().getTime();
