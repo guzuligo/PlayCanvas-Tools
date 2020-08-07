@@ -1,4 +1,4 @@
-//For questions, refer to guzuligo at gmail dot com
+//For questions, refer to https://github.com/guzuligo
 //Version 1.0.2
 var ResolutionTools = pc.createScript('resolutionTools');
 
