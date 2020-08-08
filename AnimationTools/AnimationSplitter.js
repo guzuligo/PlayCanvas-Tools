@@ -1,18 +1,20 @@
-var AnimationSpliter = pc.createScript('animationSpliter');
+//For questions, refer to https://github.com/guzuligo
+//Version 1.0.0
+var AnimationSplitter = pc.createScript('animationSplitter');
 //var d__=new pc.Vec3(0,0,1);
-AnimationSpliter.attributes.add("name",{type:"string",title:"Name",default:"",description:
+AnimationSplitter.attributes.add("name",{type:"string",title:"Name",default:"",description:
     "Name used as a chache ID and in autonaming if no animation names provided."});
-AnimationSpliter.attributes.add("ani",{type:"asset",title:"Animation"});
-AnimationSpliter.attributes.add("dur",{type:"vec3",title:"Durations",placeholder:["start","end","speed"],array:true,description:
+AnimationSplitter.attributes.add("ani",{type:"asset",title:"Animation"});
+AnimationSplitter.attributes.add("dur",{type:"vec3",title:"Durations",placeholder:["start","end","speed"],array:true,description:
     "Each duration will be treated as a separate animation."});
 
-AnimationSpliter.attributes.add("durn",{type:"string",title:"Animation Names",array:true,description:
+AnimationSplitter.attributes.add("durn",{type:"string",title:"Animation Names",array:true,description:
     "Should be in the same order as durations"});
-AnimationSpliter.attributes.add("shared",{type:"boolean",title:"Shared",default:true,description:
+AnimationSplitter.attributes.add("shared",{type:"boolean",title:"Shared",default:true,description:
     "All entities share the same results of splitting in order to avoid recalculating"});
-AnimationSpliter.attributes.add("anyani",{type:"boolean",title:"Fix Type",default:true,
+AnimationSplitter.attributes.add("anyani",{type:"boolean",title:"Fix Type",default:true,
     description:"When asset type is text or non-animation json, it can be reloaded as animation."});
-AnimationSpliter.attributes.add("after",{type:"number",title:"Then",default:1,
+AnimationSplitter.attributes.add("after",{type:"number",title:"Then",default:1,
     enum:[
     {"None":0},
     {"Replace Animations":1},
@@ -21,13 +23,13 @@ AnimationSpliter.attributes.add("after",{type:"number",title:"Then",default:1,
     ],
     description:"What to do after animation generated."});
 
-AnimationSpliter.staticVars={animation:{}};
-AnimationSpliter.prototype.animation=null;
+AnimationSplitter.staticVars={animation:{}};
+AnimationSplitter.prototype.animation=null;
 // initialize code called once per entity
-AnimationSpliter.prototype.initialize = function() {
+AnimationSplitter.prototype.initialize = function() {
     var reload=(useCache=true)=>{
         this.reload();
-        //AnimationSpliter.staticVars.animation[this.name]=this.generate(); 
+        //AnimationSplitter.staticVars.animation[this.name]=this.generate(); 
         
         if (this.ani){
             if(this.ani.loaded){
@@ -49,7 +51,7 @@ AnimationSpliter.prototype.initialize = function() {
     }
     ,this);
     
-    //if (!this.shared || !AnimationSpliter.staticVars.animation[this.name])
+    //if (!this.shared || !AnimationSplitter.staticVars.animation[this.name])
     reload(this.shared);
     //else
     //    reload();
@@ -59,11 +61,11 @@ AnimationSpliter.prototype.initialize = function() {
 /*
  * Try again to generate
  */ 
-AnimationSpliter.prototype.retry = function() {
+AnimationSplitter.prototype.retry = function() {
     this.generate(false); 
 };
 
-AnimationSpliter.prototype.reload=function(){
+AnimationSplitter.prototype.reload=function(){
     if (this.ani){
         if (this.ani.type=="json" || this.ani.type=="text"){
             if (this.anyani)this.ani.type="animation";
@@ -78,9 +80,9 @@ AnimationSpliter.prototype.reload=function(){
 /*
  * Goes through the durations and returns an array of animations
  */ 
-AnimationSpliter.prototype.generate=function(useCache=true){
+AnimationSplitter.prototype.generate=function(useCache=true){
     
-    var animations=(useCache)?AnimationSpliter.staticVars.animation[this.name]:null;
+    var animations=(useCache)?AnimationSplitter.staticVars.animation[this.name]:null;
     var i;
     if(!animations){animations={};
         i=-1;while(++i<this.dur.length){
@@ -91,13 +93,13 @@ AnimationSpliter.prototype.generate=function(useCache=true){
     }
     
     if (this.shared)
-        AnimationSpliter.staticVars.animation[this.name]=animations;
+        AnimationSplitter.staticVars.animation[this.name]=animations;
     //console.log("an",this.entity.animation,this.after);
     this.doAfter(animations);
     return (this.animation=animations);
 };
 
-AnimationSpliter.prototype.doAfter=function(animations){
+AnimationSplitter.prototype.doAfter=function(animations){
     if (this.after){
         if (!this.entity.animation)
             this.entity.addComponent('animation');
@@ -122,9 +124,9 @@ AnimationSpliter.prototype.doAfter=function(animations){
  * @param {number} end_ Animation name
  * 
  */ 
-AnimationSpliter.prototype.slice=function(name_,start_,end_,speed_=1){
+AnimationSplitter.prototype.slice=function(name_,start_,end_,speed_=1){
     //only works with animation type
-    if(this.ani.type!="animation"){console.error("AnimationSpliter unable to read asset.");return null;}
+    if(this.ani.type!="animation"){console.error("AnimationSplitter unable to read asset.");return null;}
     
     var a=new pc.Animation();
     var s=this.ani.resource || new pc.Animation();//source animation
@@ -160,11 +162,3 @@ AnimationSpliter.prototype.slice=function(name_,start_,end_,speed_=1){
     
     return a;
 };
-
-
-// swap method called for script hot-reloading
-// inherit your script state here
- //AnimationSpliter.prototype.swap = function(old) { console.log("swap();");};
-
-// to learn more about script anatomy, please read:
-// http://developer.playcanvas.com/en/user-manual/scripting/
