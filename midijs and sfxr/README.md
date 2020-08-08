@@ -10,4 +10,4 @@ Provides tools to create sound effects generated on the fly. Use the HTML file t
 this.entity.script.sfxrPlayer.play(0); //0 is the index of the sfx data
 
 
-Code I used from https://github.com/humphd/sfxr.js
+Code I used from https://github.com/humphd/sfxr.js and then switch to https://github.com/MaulingMonkey/sfxr.js for fixes
