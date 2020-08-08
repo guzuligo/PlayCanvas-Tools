@@ -1,5 +1,5 @@
-//By guzuligo at gmail dot com
-//Version 1.0.1
+//For questions, refer to https://github.com/guzuligo
+//Version 1.0.2
 
 var TouchGamePad = pc.createScript('touchGamePad');
 //For User
@@ -408,19 +408,9 @@ TouchGamePad.prototype.mapPos_=function(p,withMinus=false){
     return result_;
 };
 
+var v2=new pc.Vec2();
 TouchGamePad.prototype.getRes=function(){
-    return this.holder.resolution.clone().scale(1/this.app.renderer.device.maxPixelRatio);
+    var c=pc.app.graphicsDevice.clientRect;
+    //var m=1;//1/this.app.renderer.device.maxPixelRatio;
+    return v2.set(c.width,c.height);//this.holder.resolution.clone().scale(1/this.app.renderer.device.maxPixelRatio);
 };
-
-
-///For debuggning
-//class eeee{static e;}
-
-
-// swap method called for script hot-reloading
-// inherit your script state here
-// TouchGamePad.prototype.swap = function(old) { };
-
-// to learn more about script anatomy, please read:
-// http://developer.playcanvas.com/en/user-manual/scripting/
-
