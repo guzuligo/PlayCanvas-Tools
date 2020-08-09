@@ -1,5 +1,5 @@
 //For questions, refer to https://github.com/guzuligo
-//Version 1.0.2
+//Version 1.0.3
 
 var TouchGamePad = pc.createScript('touchGamePad');
 //For User
@@ -12,7 +12,7 @@ TouchGamePad.prototype.getRaw=function(){
 };
 
 TouchGamePad.prototype.get=function(){
-    var _r=this.getRaw();this.isPressed();
+    var _r=this.getRaw();//this.isPressed();
     if (this.onehot){
         _r.x=(_r.x<this.actd)?(-_r.x<this.actd)?0:-1:1;
         _r.y=(_r.y<this.actd)?(-_r.y<this.actd)?0:-1:1;
@@ -76,6 +76,11 @@ TouchGamePad.attributes.add("adjust",{
     "The method to get close to where the touch is.",
     default:"float",
 });
+TouchGamePad.attributes.add("limited",{default:true,
+   title:"Use Boundaries",type:"boolean",description:
+    "If set, the stick will not leave the pad."
+});
+
 TouchGamePad.attributes.add("actopacity",{
     title:"Active Opacity",type:"number",default:1,min:-0.01,max:1,description:
     "The opacity to use when held. Stick will use same opacity + delta"
@@ -94,7 +99,7 @@ TouchGamePad.attributes.add("autohide",{
 
 TouchGamePad.attributes.add("onehot",{
    title:"Return one hot",type:"boolean",description:
-    "If set, returned value will be either zero or one instead of a float."
+    "If set, returned value of get() will be either zero or one instead of a float. Note that getRaw() won't be affected."
 });
 TouchGamePad.attributes.add("actd",{
    title:"Activation Distance",type:"number",min:0,max:1,default:0.5,description:
@@ -315,7 +320,8 @@ TouchGamePad.prototype.move_=function(e){
     
     if (this.dir!="c"){
         this.drawAt(e,this.stick);
-        if(this.autozero===0)this._limit(this.stick,this.deadzone!==0);
+        //if(this.autozero===0)this._limit(this.stick,this.deadzone!==0);
+        if(this.limited)this._limit(this.stick,this.deadzone!==0);
     }
 };
 
@@ -338,28 +344,11 @@ TouchGamePad.prototype.drawAt=function(e,who_){
     who_.setPosition(x,y,0);
 };
 
-TouchGamePad.prototype.limitv0=function(t){
-    var p=t.getLocalPosition().clone();
-    var d_=this.entity.getScale();
-    var P=p.x*p.x+p.y*p.y;
-    var d=Math.sqrt(d_.x*d_.x+d_.y*d_.y);//*0.1;
-    if (P>d*d){
-        P=Math.sqrt(P);
-        p.x=d*p.x/P;
-        p.y=d*p.y/P;
-        //this.app.renderer.device.maxPixelRatio
-        if (this.adjust=="follow"){
-            this.entity.translate(p);
-        }else
-        if (!isNaN(p.x))
-        t.setLocalPosition(p);
-    }
-};
-
+TouchGamePad.prototype.limitSize=undefined;
 TouchGamePad.prototype._limit=function(t,usedeadzone=false){
     var p=t.getLocalPosition().clone();
     var d_=this.entity.getScale().clone();//this.app.root.findByName("Pad").element.width
-    d_.scale(this.entity.element.width*0.5);
+    d_.scale(this.limitSize || this.entity.element.width*0.5);
     var P=p.length();
     var d=d_.length();//*0.1;
     if (P>d){
@@ -376,24 +365,6 @@ TouchGamePad.prototype._limit=function(t,usedeadzone=false){
     }
 };
 
-TouchGamePad.prototype.limitv2=function(t){
-    var p=t.getLocalPosition().clone();
-    var d_=this.entity.getScale().clone();//this.app.root.findByName("Pad").element.width
-    d_.scale(this.entity.element.width*0.5);
-    var P=p.length();
-    p.x*=this.entity.element.width/Math.abs(this.entity.element.width+this.entity.element.height);
-        p.y*=this.entity.element.height/Math.abs(this.entity.element.width+this.entity.element.height);
-    var d=d_.length();//*0.1;
-    if (P>d){
-        p.normalize().scale(d);
-        
-        t.setLocalPosition(p);
-        p.scale(1/d);
-        if (this.adjust=="follow" && p.length()>d*2)
-            this.entity.translate(p.scale(P/this.holder.referenceResolution.length()/3));   
-        //console.log("at",this.get());
-    }    
-};
 
 
 
