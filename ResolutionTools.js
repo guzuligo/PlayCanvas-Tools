@@ -1,12 +1,15 @@
 //For questions, refer to https://github.com/guzuligo
-//Version 1.0.3
+//Version 1.0.5
 var ResolutionTools = pc.createScript('resolutionTools');
 
 ResolutionTools.attributes.add("ratio",{title:"Pixel Ratio",type:"number",default:1,min:0.01,max:2});
 ResolutionTools.attributes.add("smoothness",{title:"Smoothness",type:"number",default:0,enum:[
     {"NONE":-1},{"AUTO":0},{"PIXELATED":1},{"CRISP-EDGES":2}
 ]});
-ResolutionTools.attributes.add("fps",{title:"FPS",type:"number",default:60,min:0.5,max:60,step:1,precision:1});
+ResolutionTools.attributes.add("fps",{title:"FPS",type:"number",default:60,min:0.5,max:60,step:1,precision:1,description:
+    "Causes frame skips to show low frame per second rate."});
+ResolutionTools.attributes.add("fpss",{title:"Slow Motion FPS",type:"boolean",default:false,description:
+    "If activated, PlayCanvas internal engine will be altered to reduce fps even on simulations."});
 
 ResolutionTools.attributes.add("orientation",{title:"Default setOrientation",type:"number",default:-1, description:
     "The resolution to use when setOrientation function used without attributes.",
@@ -25,7 +28,8 @@ ResolutionTools.prototype.initialize = function() {
     
     this.on("attr:ratio",()=>this.setResolutionRatio(this.ratio));
     this.on("attr:smoothness",()=>this.setSmoothness(this.smoothness));
-    this.on("attr:fps",()=>this.setFPS(this.fps));
+    this.on("attr:fps" ,()=>this.setFPS(this.fps));
+    this.on("attr:fpss",()=>this.setFPS(this.fps));
     //this.setOrientation(this.orientation);
 };
 
@@ -37,12 +41,16 @@ ResolutionTools.prototype.setResolutionRatio=function (ratio_=1){
 
 ResolutionTools.prototype.lastTime=0;
 ResolutionTools.prototype.update=function(dt){
-    if(this.fps<60){
+    if(this.fps<60 &&!this.fpss){
         if(this.lastTime>1/this.fps){
+            
             this.lastTime=0;
             this.app.render();
         }else this.lastTime+=dt;
+        
     }
+    //console.log(dt);
+    
 };
 
 /*
@@ -62,6 +70,10 @@ ResolutionTools.prototype.toggleFullScreen=function(){
 ResolutionTools.prototype.setFullScreen=function(fullScreen_=true){
     this.app.graphicsDevice.fullscreen=fullScreen_;
 };
+
+ResolutionTools.prototype.isLandscape=function(){
+    return window.orientation%180===0;
+};
 /*
  * Change orientation to one of the following:  "any" "natural" "landscape" "portrait" 
  * "portrait-primary" "portrait-secondary" "landscape-primary" "landscape-secondary"
@@ -80,13 +92,24 @@ ResolutionTools.prototype.setOrientation=function(type_){
     try{screen.orientation.lock(type_);}catch(e){console.error("Orientation not available.");}
 };
 
+ResolutionTools.prototype._fpsFunModified=false;
 ResolutionTools.prototype.setFPS=function(fps){
-    this.app.autoRender=(fps==60);
+    this.app.autoRender=(fps==60 || this.fpss);
     
         
+    var towarn=false;
+    if(fps!=60 && this.fpss && !this._fpsFunModified)
+        towarn=this._fpsFunModified=true;
     
-    /*
-    if(fps!=60)fps=1000/fps;else fps=16;
+    if(fps!=60 && this.fpss)fps=1000/fps;else fps=16;
+    
+    
+    
+    
+    //Following will modify the requestAnimationFrame function and it will be forever modified
+    if(!this._fpsFunModified)return;//Don't patch unless patching happened or should happen
+    if(towarn)
+        console.warn("Altering PlayCanvas animation function.");
     var lastTime=0;
     window.requestAnimationFrame = function(callback, element) {
             var currTime = new Date().getTime();
@@ -96,11 +119,5 @@ ResolutionTools.prototype.setFPS=function(fps){
             lastTime = currTime + timeToCall;
             return id;
         };  
-    */
+    
 };
-// swap method called for script hot-reloading
-// inherit your script state here
-// ResolutionTools.prototype.swap = function(old) { };
-
-// to learn more about script anatomy, please read:
-// http://developer.playcanvas.com/en/user-manual/scripting/
