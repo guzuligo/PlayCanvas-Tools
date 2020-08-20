@@ -53,7 +53,7 @@ GToonShader.prototype.reset=function(){
         varying vec2 texCoord;\n\
         void main(void)     \n\
         {\n\
-            float v = vertOutTexCoord; vec4 color;//=cF0; \nxReplace1\n\
+            float v = vertOutTexCoord; vec4 color=vec4(1.);//=cF0; \nxReplace1\n\
             gl_FragColor =  color;//vec4(uF0[1],.0,.0, 1.0);\n\
         }";
     }
