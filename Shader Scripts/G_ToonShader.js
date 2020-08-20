@@ -3,7 +3,7 @@
 var GToonShader = pc.createScript('gToonShader');
 GToonShader.attributes.add("diffuse",{type:"asset",title:"Diffuse",assetType:"texture"});
 GToonShader.attributes.add("smooths",{type:"number",title:"Smoothness",min:0,max:1.0,default:0});
-GToonShader.attributes.add("uF0",{type:"json",array:true,schema:[
+GToonShader.attributes.add("uF0",{type:"json",title:"Colors",array:true,schema:[
     {name:"activation",type:"number",min:-0.01,max:1,default:.5},{name:"color",type:"rgba"}
 ]});
 //GToonShader.attributes.add("uFc",{type:"rgba",array:true});
@@ -116,10 +116,3 @@ GToonShader.prototype.update = function(dt) {
     }
     
 };
-
-// swap method called for script hot-reloading
-// inherit your script state here
-// GToonShader.prototype.swap = function(old) { };
-
-// to learn more about script anatomy, please read:
-// http://developer.playcanvas.com/en/user-manual/scripting/
