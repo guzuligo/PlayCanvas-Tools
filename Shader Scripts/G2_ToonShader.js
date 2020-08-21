@@ -1,6 +1,7 @@
 //For questions, refer to https://github.com/guzuligo
-//Version 0.1.0
+//Version 0.1.1
 var G2Toonshader = pc.createScript('g2Toonshader');
+G2Toonshader.attributes.add("useThis",{title:"Initialize entity material",type:"boolean",default:true});
 G2Toonshader.attributes.add("material",{type:"asset",assetType:"material",title:"Material",description:
 "The material to convert to toonshaded. If left empty, a new material will be created and you'll have to"+
 " assign this.material to your model to use it."});
@@ -16,12 +17,41 @@ G2Toonshader.prototype.colors=0;
 G2Toonshader.statics={id:0};
 G2Toonshader.prototype.initialize = function() {
     
-    if(this.material)this.setup();
+    if(this.material){
+        if(this.material.loaded)
+            this.setup(this.useThis?this.entity.model.meshInstances[0].material=this.material.resource:undefined);
+        else{
+            this.material.once('load',()=>this.setup(
+                this.useThis?this.entity.model.meshInstances[0].material=this.material.resource:undefined
+            ));
+            this.app.assets.load(this.material);
+        }
+    }
+    else this.setup(this.useThis?this.entity.model.meshInstances[0].material:undefined);
     this.on("attr:material",function(){if(this.material)this.setup();},this);
     
     
 };
 
+G2Toonshader.prototype.setup=function(mat,clone_){
+    console.log("SETUP ",mat,clone_);
+    var m;
+    if (mat!==undefined){m=clone_?mat.clone():mat;}//TODO: to test
+    else    
+    if(!this.material){
+        this.material=new pc.Asset("ToonMaterial"+(G2Toonshader.statics.id++),"material");
+        
+        m=this.material.resource=new pc.StandardMaterial();
+    }else
+        m=this.material.resource;
+    
+    this.m=m;//console.log("m=",m);
+    //this.material.chunks={};
+    this.reset();this.setParams();
+    m.update();
+    
+    return this.m;
+};
 
 G2Toonshader.prototype.reset=function(){
     var m=this.m;
@@ -61,25 +91,17 @@ G2Toonshader.prototype.setParams=function(){
 };
 
 
-G2Toonshader.prototype.setup=function(mat,clone_){
-    if (mat)this.m=clone_?mat.clone():mat;//TODO: to test
-    var m;
-    
-    if(!this.material){
-        this.material=new pc.Asset("ToonMaterial"+(G2Toonshader.statics.id++),"material");
-        
-        m=this.material.resource=new pc.StandardMaterial();
-    }else
-        m=this.material.resource;
-    this.m=m;
-    //this.material.chunks={};
-    this.reset();this.setParams();
-    m.update();
-    return this.m;
-};
+
 
 
 // update code called every frame
 G2Toonshader.prototype.update = function(dt) {
     this.setParams();
 };
+
+// swap method called for script hot-reloading
+// inherit your script state here
+// G2Toonshader.prototype.swap = function(old) { };
+
+// to learn more about script anatomy, please read:
+// http://developer.playcanvas.com/en/user-manual/scripting/
