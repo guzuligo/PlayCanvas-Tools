@@ -1,5 +1,5 @@
 //For questions, refer to https://github.com/guzuligo
-//Version 1.0.5
+//Version 1.0.6
 var ResolutionTools = pc.createScript('resolutionTools');
 
 ResolutionTools.attributes.add("ratio",{title:"Pixel Ratio",type:"number",default:1,min:0.01,max:2});
@@ -45,7 +45,7 @@ ResolutionTools.prototype.update=function(dt){
         if(this.lastTime>1/this.fps){
             
             this.lastTime=0;
-            this.app.render();
+            this.app.renderNextFrame=true;
         }else this.lastTime+=dt;
         
     }
@@ -121,3 +121,9 @@ ResolutionTools.prototype.setFPS=function(fps){
         };  
     
 };
+// swap method called for script hot-reloading
+// inherit your script state here
+// ResolutionTools.prototype.swap = function(old) { };
+
+// to learn more about script anatomy, please read:
+// http://developer.playcanvas.com/en/user-manual/scripting/
