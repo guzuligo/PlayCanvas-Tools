@@ -1,5 +1,5 @@
 //For questions, refer to https://github.com/guzuligo
-//Version 1.0.0
+//Version 0.0.1
 var GToonShader = pc.createScript('gToonShader');
 GToonShader.attributes.add("diffuse",{type:"asset",title:"Diffuse",assetType:"texture"});
 GToonShader.attributes.add("smooths",{type:"number",title:"Smoothness",min:0,max:1.0,default:0});
