@@ -1,5 +1,5 @@
 //For questions, refer to https://github.com/guzuligo
-//Version 0.1.0
+//Version 0.1.0 deprecated. Use BatchingTool
 //
 
 var ConvertToinstances = pc.createScript('convertToinstances');
