@@ -389,16 +389,3 @@ TouchGamePad.prototype.getRes=function(){
     //var m=1;//1/this.app.renderer.device.maxPixelRatio;
     return v2.set(c.width,c.height);//this.holder.resolution.clone().scale(1/this.app.renderer.device.maxPixelRatio);
 };
-
-
-///For debuggning
-//class eeee{static e;}
-
-
-// swap method called for script hot-reloading
-// inherit your script state here
-// TouchGamePad.prototype.swap = function(old) { };
-
-// to learn more about script anatomy, please read:
-// http://developer.playcanvas.com/en/user-manual/scripting/
-
