@@ -1,5 +1,5 @@
 //For questions, refer to https://github.com/guzuligo
-//Version 1.0.3
+//Version 1.0.4b
 
 var TouchGamePad = pc.createScript('touchGamePad');
 //For User
@@ -7,11 +7,15 @@ var TouchGamePad = pc.createScript('touchGamePad');
 TouchGamePad.prototype.isPressed=function(){
     return this.id!=-1;
 };
+//TODO: rplace .clone() with copying to reduce garbage
 TouchGamePad.prototype.getRaw=function(){
     return this.stick.getLocalPosition().clone().scale(2/this.entity.element.width);
 };
 
 TouchGamePad.prototype.get=function(){
+    if(!this.entity.enabled)
+        return this._tmpv3.set(0,0,0);
+    
     var _r=this.getRaw();//this.isPressed();
     if (this.onehot){
         _r.x=(_r.x<this.actd)?(-_r.x<this.actd)?0:-1:1;
@@ -26,7 +30,7 @@ TouchGamePad.prototype.tick=-1;//updates every frame
 TouchGamePad.prototype.timer=0;//uses delta time
 TouchGamePad.prototype.sleeping=true;
 TouchGamePad.prototype.sleepingAutoback=0;
-TouchGamePad.prototype._justPressed=false;
+TouchGamePad.prototype._justPressed=false;//TODO:remove
 TouchGamePad.prototype._initposition=null;//new pc.Vec3(0,0,0);
 TouchGamePad.prototype.holder=null;
 //TouchGamePad.prototype.stick=null;
@@ -385,3 +389,16 @@ TouchGamePad.prototype.getRes=function(){
     //var m=1;//1/this.app.renderer.device.maxPixelRatio;
     return v2.set(c.width,c.height);//this.holder.resolution.clone().scale(1/this.app.renderer.device.maxPixelRatio);
 };
+
+
+///For debuggning
+//class eeee{static e;}
+
+
+// swap method called for script hot-reloading
+// inherit your script state here
+// TouchGamePad.prototype.swap = function(old) { };
+
+// to learn more about script anatomy, please read:
+// http://developer.playcanvas.com/en/user-manual/scripting/
+
