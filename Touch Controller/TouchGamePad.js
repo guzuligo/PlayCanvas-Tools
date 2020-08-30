@@ -1,8 +1,9 @@
 //For questions, refer to https://github.com/guzuligo
-//Version 1.0.4b
+//Version 1.0.5 this.useTime under testing
 
 var TouchGamePad = pc.createScript('touchGamePad');
 //For User
+TouchGamePad.prototype.dT=1;
 
 TouchGamePad.prototype.isPressed=function(){
     return this.id!=-1;
@@ -118,7 +119,7 @@ TouchGamePad.attributes.add("deadzone",{
 TouchGamePad.attributes.add("autozero",{
     title:"Reset",type:"number",default:0,min:0,max:1,description:
     "When touch moves, it gradually goes back to zero. Use 0 to diactivate. "+
-    "(Note: If not set to zero, limit will break)"
+    ""//(Note: If not set to zero, limit will break)"
 });
 
 TouchGamePad.attributes.add("stick",{
@@ -127,11 +128,14 @@ TouchGamePad.attributes.add("stick",{
     "first child will be used. (Make sure to have at least one child)" 
 });
 
+TouchGamePad.prototype.useTime=true;
+
 //For Admin
-TouchGamePad.prototype.autoZero=function(){
+TouchGamePad.prototype.autoZero=function(dT){
     if (this.autozero===0)
         return;
-    var scale__=this.autozero/this.holder.referenceResolution.x;//TODO:Needs more accuricy
+    var scale__=Math.min(1,dT*this.autozero)/this.holder.referenceResolution.x;//TODO:Needs more accuricy
+    
     var dir__=this.stick.getLocalPosition().clone().scale(scale__);
     if (this.adjust!="follow"){
         if (this.id==-1)
@@ -174,24 +178,24 @@ TouchGamePad.prototype.initialize = function() {
 
 // update code called every frame
 TouchGamePad.prototype.update = function(dt) {
-    
+    var dT= this.useTime? this.dT=dt*60:1;
     //if (this.id!==-1) console.log(this.get());
     
     if (this.sleepingAutoback>0 && this.autoback!==0 && this.id==-1 ){
-        var _vec_=this._tmpv3.sub2(this._initposition,this.entity.getPosition()).scale(this.autoback);
+        var _vec_=this._tmpv3.sub2(this._initposition,this.entity.getPosition()).scale(Math.min(1,dT*this.autoback));
         this.entity.translate(_vec_);
         if (this.sleeping)
          if (--this.sleepingAutoback<=0)
             this.entity.setPosition(this._initposition);
     }
-    this.autoZero();
+    this.autoZero(dT);
     if (this.id!=-1) {this.tick++;this.timer+=dt;} else
         if(!this.sleeping){
        
-        
-        if (this.autohide!==0){
-            this.entity.element.opacity*=1-this.autohide;
-            this.stick.element.opacity*=1-this.autohide;
+        var autohide=this.autohide*dT;
+        if (autohide!==0){
+            this.entity.element.opacity*=1-autohide;
+            this.stick.element.opacity*=1-autohide;
             if (this.entity.element.opacity<0.01){
                 this.sleeping=true;
                 this.entity.element.opacity=0;
@@ -353,7 +357,7 @@ TouchGamePad.prototype._limit=function(t,usedeadzone=false){
     var p=t.getLocalPosition().clone();
     var d_=this.entity.getScale().clone();//this.app.root.findByName("Pad").element.width
     d_.scale(this.limitSize || this.entity.element.width*0.5);
-    var P=p.length();
+    var P=p.length()*this.dT;
     var d=d_.length();//*0.1;
     if (P>d){
         p.normalize().scale(d);
